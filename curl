@@ -1,0 +1,54 @@
+If you don’t care about the output (but still want to request it, maybe to look at verbose output with -v or other metadata with -w), you can just send it to /dev/null:
+    curl -s -w '%{http_code}' -o /dev/null "http://httpbin.org/uuid"
+
+You can suppress the progress indicator with -s:
+    curl -s "http://httpbin.org/uuid" > output.json
+
+    cat output.json
+    {
+    "uuid": "a4ce5649-6bb2-49c0-af93-e97f731c7483"
+    }
+
+
+You can use the -w switch to emit timing for a request
+  curl -w '   namelookup: %{time_namelookup}\n      connect: %{time_connect}\n   appconnect: %{time_appconnect}\n  pretransfer: %{time_pretransfer}\n     redirect: %{time_redirect}\nstarttransfer: %{time_starttransfer}\n        total: %{time_total}\n\n' "http://httpbin.org/uuid"
+  {
+  "uuid": "fcec0ce4-5374-403e-9786-1ebabaadb3b0"
+  }
+namelookup: 0.004505
+connect: 0.050844
+appconnect: 0.000000
+pretransfer: 0.050907
+redirect: 0.000000
+starttransfer: 0.102053
+  total: 0.102116
+
+
+You can make a HEAD request with the -I flag, this can be useful in a script for checking if website is up:
+    curl -I "http://httpbin.org/uuid"
+    HTTP/1.1 200 OK
+    Connection: keep-alive
+    Server: meinheld/0.6.1
+    Date: Sun, 26 Nov 2017 19:12:25 GMT
+    Content-Type: application/json
+    Access-Control-Allow-Origin: *
+    Access-Control-Allow-Credentials: true
+    X-Powered-By: Flask
+    X-Processed-Time: 0.000476121902466
+    Content-Length: 53
+    Via: 1.1 vegur
+
+
+You can change the method with the -X parameter and post form data fields with -F:
+    curl -X POST -F "field=value" "http://httpbin.org/post"
+    {
+    "args": {},
+    "data": "",
+    "files": {},
+    "form": {
+    "field": "value"
+    },
+    ...
+
+POST data can be sent with -d either inline:
+      curl -X POST -d '{"field":"value"}' "http://httpbin.org/post"
